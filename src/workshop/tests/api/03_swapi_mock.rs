@@ -6,6 +6,12 @@
 //! Let's practice writing a mock using the
 //! [wiremock](https://docs.rs/wiremock/) library!
 
+use serde_json::json;
+use wiremock::{
+    matchers::{method, path},
+    Mock, MockServer, ResponseTemplate,
+};
+
 use {
     std::time::Duration,
     workshop::swapi::{Person, SwapiClient},
@@ -24,11 +30,14 @@ async fn retrieve_luke_height_from_swapi_mock() {
     // You should return the response we have seen in the previous exercise
     // when looking for Luke: a 200 status code and Luke's name and height
     // in the `results` of the body.
-    todo!();
+    let mock_server = MockServer::start().await;
+    Mock::given(method("GET")).and(path("/api/people/")).respond_with(ResponseTemplate::new(200).insert_header("Content-type", "application/json")
+        .set_body_json(json!({"count":1,"next":null,"previous":null,"results":[{"name":"Luke Skywalker","height":"172","mass":"77","hair_color":"blond","skin_color":"fair","eye_color":"blue","birth_year":"19BBY","gender":"male","homeworld":"https://swapi.dev/api/planets/1/","films":["https://swapi.dev/api/films/1/","https://swapi.dev/api/films/2/","https://swapi.dev/api/films/3/","https://swapi.dev/api/films/6/"],"species":[],"vehicles":["https://swapi.dev/api/vehicles/14/","https://swapi.dev/api/vehicles/30/"],"starships":["https://swapi.dev/api/starships/12/","https://swapi.dev/api/starships/22/"],"created":"2014-12-09T13:50:51.644000Z","edited":"2014-12-20T21:17:56.891000Z","url":"https://swapi.dev/api/people/1/"}]}
+        ))).mount(&mock_server).await;
 
     // Use the [uri](https://docs.rs/wiremock/0.5.14/wiremock/struct.MockServer.html#method.uri)
     // method to retrieve the base url.
-    let base_url = todo!();
+    let base_url = mock_server.uri();
     // You can ignore the timeout for this exercise.
     let timeout = Duration::from_secs(2);
     let swapi_client = SwapiClient::new(base_url, timeout).unwrap();
@@ -48,9 +57,18 @@ async fn spock_is_not_found_from_swapi_mock() {
     // Start a `MockServer` and mock the GET response you get in the `SwapiClient`.
     // You should return the response we have seen in the previous exercise
     // when looking for Spock: a 200 status code and an empty `results` in the body.
-    todo!();
+    let mock_server = MockServer::start().await;
+    Mock::given(method("GET"))
+        .and(path("/api/people/"))
+        .respond_with(
+            ResponseTemplate::new(404)
+                .insert_header("Content-type", "application/json")
+                .set_body_json(json!({"count": 0, "results": []})),
+        )
+        .mount(&mock_server)
+        .await;
 
-    let base_url = todo!();
+    let base_url = mock_server.uri();
 
     // You can ignore the timeout for this exercise.
     let timeout = Duration::from_secs(2);
@@ -79,9 +97,19 @@ async fn swapi_client_returns_timeout_error_if_timeout() {
     let timeout = Duration::from_secs(2);
 
     // Start a `MockServer` and mock the GET request you do in the `SwapiClient`.
-    todo!();
+    let mock_server = MockServer::start().await;
+    Mock::given(method("GET"))
+        .and(path("/api/people/"))
+        .respond_with(
+            ResponseTemplate::new(200)
+                .insert_header("Content-type", "application/json")
+                .set_body_json(json!({"count": 0, "results": []}))
+                .set_delay(Duration::from_secs(6000)),
+        )
+        .mount(&mock_server)
+        .await;
 
-    let base_url = todo!();
+    let base_url = mock_server.uri();
     let swapi_client = SwapiClient::new(base_url, timeout).unwrap();
     let err: reqwest::Error = swapi_client.people_by_name(&luke.name).await.unwrap_err();
     assert!(err.is_timeout());

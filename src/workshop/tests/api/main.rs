@@ -2,32 +2,34 @@
 //! - Comment out the modules of this file one by one, starting from the module `greetings`.
 //! - Run `cargo test` and solve the exercises of each module.
 
-// #[path = "00_greetings.rs"]
-// mod greetings;
+mod helpers;
 
-// #[path = "01_swapi_docker.rs"]
-// mod swapi_docker;
+#[path = "00_greetings.rs"]
+mod greetings;
+
+#[path = "01_swapi_docker.rs"]
+mod swapi_docker;
 
 // #[path = "02_swapi.rs"]
 // mod swapi;
 
-// #[path = "03_swapi_mock.rs"]
-// mod swapi_mock;
+#[path = "03_swapi_mock.rs"]
+mod swapi_mock;
 
-// #[path = "04_swapi_tests_cleanup1.rs"]
-// mod swapi_tests_cleanup1;
+#[path = "04_swapi_tests_cleanup1.rs"]
+mod swapi_tests_cleanup1;
 
-// #[path = "04_swapi_tests_cleanup2.rs"]
-// mod swapi_tests_cleanup2;
+#[path = "04_swapi_tests_cleanup2.rs"]
+mod swapi_tests_cleanup2;
 
-// #[path = "04_swapi_tests_cleanup3.rs"]
-// mod swapi_tests_cleanup3;
+#[path = "04_swapi_tests_cleanup3.rs"]
+mod swapi_tests_cleanup3;
 
-// #[path = "05_taller.rs"]
-// mod taller;
+#[path = "05_taller.rs"]
+mod taller;
 
-// #[path = "06_taller_error.rs"]
-// mod taller_error;
+#[path = "06_taller_error.rs"]
+mod taller_error;
 
 // #[path = "07_server_settings1.rs"]
 // mod server_settings1;
